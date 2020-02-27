@@ -1,4 +1,4 @@
-const { Employee, Manager, Engineer, Intern } = require("../lib/Staff");
+const { Employee } = require("../lib/staff");
 
 test("Can instantiate Employee instance", () => {
   const e = new Employee();

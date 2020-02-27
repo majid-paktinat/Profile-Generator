@@ -1,82 +1,63 @@
-/* WIREFRAME:
-    < input team manager + number members:
-        - name/email + number members
-        - role = 'Manager'
-     (loop)
-        < member info:
-            - name + role=(engineer | interns)
-            - intern: school
-            - engineer: github username
+/* 
+    font awsome <i class="fas fa-user-graduate"></i>
+    read from templates and then writefile
+    validate values in prompt - required and optionals - number of perople just number!
+    
+    // function validateFunc(input){
+    // 	if (input=="Engineer") { 
+    //         return true;
+    // 	}
+    // 	else { // if input=="Intern"
+    // 		return false;
+    // 	}
+    // }
 
-        
-    what building blocks do we need?
-    Employee class (name, email, role)
-    Manager class (employees, array)
-    Intern class (school)
-    Engineer class (github)
-    
-    test creating of each class
-    > create Manager Class, check it works.
-    > add an employee (Intern): did it increase managers employees?
-    > add an employee (engineer): did it increase employees.
-    
+    Try and catch !
 
-    use template for read and then writefile
-    labelaye khat ha too prompt faza bede!
-    
-    run the jest tests
-    
-
-    * TDD is nice but not necessary for this.
-    */
+*/
 
 const inquirer = require( 'inquirer' );
 const util = require( "util" );
 const fs = require( 'fs' );
 const writeFileAsync = util.promisify(fs.writeFile);
 
-const { Manager, Engineer, Intern } = require("./lib/Staff");
-// In case of name collisions, we can rename them like this:
-// const { Manager : OtherManager, Engineer : OtherEngineer, Intern : OtherIntern, } = require("./lib/myclass");
-
-
-
+const { Manager, Engineer, Intern } = require("./lib/staff");
 
 async function main(){
-
+    console.clear();
     const managerData = await inquirer.prompt([
-        { name: 'managername', type: 'input', message: `What is the manager's name?` },
-        { name: 'manageremail', type: 'input', message: `What is the manager's email?` },
-        { name: 'managerofficenumber', type: 'input', message: `What is the manager's office number?` },
-        { name: 'count', type: 'input', message: 'How many people work under him/her?' }
+        { name: 'managername', type: 'input', message: `What is the manager's name?\n` },
+        { name: 'manageremail', type: 'input', message: `What is the manager's email?\n` },
+        { name: 'managerofficenumber', type: 'input', message: `What is the manager's office number?\n` },
+        { name: 'count', type: 'input', message: 'How many people work under him/her?\n' }
     ]);
 
     // create manager object
-    let manager = new Manager( managerData.managername, managerData.manageremail, managerData.managerofficenumber );
+    let manager = new Manager( managerData.managername, managerData.fakeID, managerData.manageremail, managerData.managerofficenumber );
 
-    console.log(`new employee is a ${manager.role} with ID: ${manager.id} | name: ${manager.name} | email: ${manager.email} | office: ${manager.officeNumber} | employees: ${manager.employees} `);
+    //console.log(`new employee is a ${manager.role} with ID: ${manager.id} | name: ${manager.name} | email: ${manager.email} | office: ${manager.officeNumber} | employees: ${manager.employees} `);
     
     let userData;
     let employee;
     for( let userCnt=1; userCnt <= managerData.count; userCnt++ ){
-        // start asking role (engniner / intern) as well as general questions common between engineer and intern
-        // validate for required values like name and format like email
         userData = await inquirer.prompt([
-            { name: 'name', type: 'input', message: `What is the name?` },
-            { name: 'useremail', type: 'input', message: `What is the email?` },
-            { name: 'userrole', type: 'list', message: `What is the role?`, choices: ["Engineer", "Intern"], 'default': 'Engineer' },
-            { name: 'github', type: 'input', message: `What is the github?`, 'when': (userData) => userData.userrole === 'Engineer'},
-            { name: 'school', type: 'input', message: `What is the School?`, 'when': (userData) => userData.userrole === 'Intern' }
+            { name: 'name', type: 'input', message: `What is the name?\n` },
+            { name: 'useremail', type: 'input', message: `What is the email?\n` },
+            { name: 'userrole', type: 'list', message: `What is the role?\n`, choices: ["Engineer", "Intern"], 'default': 'Engineer' },
+            { name: 'github', type: 'input', message: `What is the github?\n`, 'when': (userData) => userData.userrole === 'Engineer'},
+            { name: 'school', type: 'input', message: `What is the School?\n`, 'when': (userData) => userData.userrole === 'Intern' }
         ]);
 
         if (userData.userrole==="Engineer"){
             // create Engineer object
-            employee = new Engineer( userData.name, userData.email, userData.github );
+            employee = new Engineer( userData.name, userData.fakeID, userData.useremail, userData.github );
+            //console.log(`new employee is a ${employee.role} with ID: ${employee.id} | name: ${employee.name} | email: ${employee.email} | git: ${employee.github} `);
 
         }
         else {
-            // create Engineer object
-            employee = new Intern( userData.name, userData.email, userData.school );
+            // create Intern object
+            employee = new Intern( userData.name, userData.fakeID, userData.useremail, userData.school );
+            //console.log(`new employee is a ${employee.role} with ID: ${employee.id} | name: ${employee.name} | email: ${employee.email} | school: ${employee.school} `);
 
         }
 
@@ -85,69 +66,88 @@ async function main(){
 
     }
 
-    // now generate html and write file
-    // let team = '';
-    // team += readCard( manager );
-    // manager.getUsers().forEach( function( user ){
-    //     team += readCard( user );
-    // });
-    // const html = readCard( { role: 'main', team: team } );
-    const html = `
-        <div class="card">
-          <div class="card-header">
-            <h4>${manager.role}</h4>
-          </div>
-          <div class="card-body">
-            <ul id="tableList" class="list-group">
-                <li class="list-group-item mt-4">
-                    <h2>${manager.name}</h2><hr>
-                    <h2>ID: ${manager.id}</h2>
-                    <h2>Name: ${manager.name}</h2>
-                    <h2>Email: ${manager.email}</h2>
-                    <h2>Phone: ${manager.officeNumber}</h2>
-                </li>
-            </ul>
-          </div>
+    var html = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <title>Document</title>
+        </head>
+
+
+        <body>
+        
+        <div class="row"><div class="col-12" style="background-color: #E54A58; color: white; padding-top:35px; padding-bottom:35px; text-align:center"><h2>My Team<h2></div></div>
+        <br>
+        <div class="container" style="border: solid 0px;">
+        
+        <div class="row">
+
+        <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18rem; ">
+            <div class="card-header" style="background-color: #147BF2; color: white;">
+                <h4>${manager.name}</h4>
+                <h4>${manager.role}</h4>
+                </div>
+                <div class="card-body" style="background-color: #F2FAF1;">
+                <ul class="list-group list-group-flush" style="border: solid 0px; border-color: gray;">
+                <li class="list-group-item"><b>ID:</b> ${manager.id}</li>
+                <li class="list-group-item"><b>Email:</b> ${manager.email}</li>
+                <li class="list-group-item"><b>Office Number:</b> ${manager.officeNumber}</li>
+                </ul>
+            </div>
         </div>
-    
     `;
-    //fs.writeFileSync( 'org.html', html );
+
+    for ( let X=0; X < manager.employees.length; X++ ){
+        if ( manager.employees[X].role == 'Engineer' ){
+            html = html + `
+            <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18rem; ">
+                <div class="card-header" style="background-color: #147BF2; color: white;">
+                    <h4>${manager.employees[X].name}</h4>
+                    <h4>${manager.employees[X].role}</h4>
+                </div>
+                <div class="card-body" style="background-color: #F2FAF1;">
+                <ul class="list-group list-group-flush" style="border: solid 0px; border-color: gray;">
+                    <li class="list-group-item"><b>ID:</b> ${manager.employees[X].id}</li>
+                    <li class="list-group-item"><b>Email:</b> ${manager.employees[X].email}</li>
+                    <li class="list-group-item"><b>GitHub:</b> ${manager.employees[X].github}</li>
+                </ul>
+                </div>
+            </div>
+            `
+        } else if ( manager.employees[X].role == 'Intern' ){
+            html = html + `
+            <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18rem; ">
+                <div class="card-header" style="background-color: #147BF2; color: white;">
+                    <h4>${manager.employees[X].name}</h4>
+                    <h4>${manager.employees[X].role}</h4>
+                </div>
+                <div class="card-body" style="background-color: #F2FAF1;">
+                <ul class="list-group list-group-flush" style="border: solid 0px; border-color: gray;">
+                    <li class="list-group-item"><b>ID:</b> ${manager.employees[X].id}</li>
+                    <li class="list-group-item"><b>Email:</b> ${manager.employees[X].email}</li>
+                    <li class="list-group-item"><b>GitHub:</b> ${manager.employees[X].school}</li>
+                </ul>
+                </div>
+            </div>
+            `
+        }
+    }
+    html = html + "</div></body></html>"
 
     try{
-        await writeFileAsync( "index.html", html );
-        console.log("Successfully wrote to 'index' file");
+        await writeFileAsync( "Team.html", html );
+        console.log("Successfully wrote to file!");
     } catch (err) {
         console.log(err);
     }
-
-
-    // console.clear();
-
-    newEmployee = manager; //new Manager('majid', 'majid@test.com', 1);
-    console.log("\n\n");
-    console.log(`new employee is a ${newEmployee.role} with ID: ${newEmployee.id} | name: ${newEmployee.name} | email: ${newEmployee.email} | office: ${newEmployee.officeNumber} | \n employees: ${JSON.stringify(newEmployee.employees)} `);
-
-    // newEmployee1 = new Engineer('ali', 'ali@test.com', 'github username');
-    // newEmployee.employees.push(newEmployee1);
-    // console.log(`new employee is a ${newEmployee1.role} with ID: ${newEmployee1.id} | name: ${newEmployee1.name} | email: ${newEmployee1.email} | github: ${newEmployee1.github} `);
-
-    // newEmployee2 = new Intern('mehdi', 'mehdi@test.com', 'school name');
-    // newEmployee.employees.push(newEmployee2);
-    // console.log(`new employee is a ${newEmployee2.role} with ID: ${newEmployee2.id} | name: ${newEmployee2.name} | email: ${newEmployee2.email} | school: ${newEmployee2.school} `);
-
-    // console.log("\n\n");
-    // console.log(`new employee is a ${newEmployee.role} with ID: ${newEmployee.id} | name: ${newEmployee.name} | email: ${newEmployee.email} | office: ${newEmployee.officeNumber} | \n employees: ${JSON.stringify(newEmployee.employees)} `);
-
-
 }
 
 main();
-
-// function validateFunc(input){
-// 	if (input=="Engineer") { 
-//         return true;
-// 	}
-// 	else { // if input=="Intern"
-// 		return false;
-// 	}
-// }

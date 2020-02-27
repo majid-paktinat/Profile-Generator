@@ -1,17 +1,6 @@
 /* 
     font awsome <i class="fas fa-user-graduate"></i>
     read from templates and then writefile
-    validate values in prompt - required and optionals - number of perople just number!
-    
-    // function validateFunc(input){
-    // 	if (input=="Engineer") { 
-    //         return true;
-    // 	}
-    // 	else { // if input=="Intern"
-    // 		return false;
-    // 	}
-    // }
-
     Try and catch !
 
 */
@@ -22,14 +11,16 @@ const fs = require( 'fs' );
 const writeFileAsync = util.promisify(fs.writeFile);
 
 const { Manager, Engineer, Intern } = require("./lib/staff");
+vUtil = require("./lib/validateUtil");
+
 
 async function main(){
     console.clear();
     const managerData = await inquirer.prompt([
-        { name: 'managername', type: 'input', message: `What is the manager's name?\n` },
-        { name: 'manageremail', type: 'input', message: `What is the manager's email?\n` },
-        { name: 'managerofficenumber', type: 'input', message: `What is the manager's office number?\n` },
-        { name: 'count', type: 'input', message: 'How many people work under him/her?\n' }
+        { name: 'managername', type: 'input', message: `What is the manager's name?\n`, validate: vUtil.validateRequired },
+        { name: 'manageremail', type: 'input', message: `What is the manager's email?\n` , validate: vUtil.validateRequired},
+        { name: 'managerofficenumber', type: 'input', message: `What is the manager's office number?\n` , validate: vUtil.validateNumber},
+        { name: 'count', type: 'input', message: 'How many people work under him/her?\n' , validate: vUtil.validateCount}
     ]);
 
     // create manager object
@@ -41,11 +32,11 @@ async function main(){
     let employee;
     for( let userCnt=1; userCnt <= managerData.count; userCnt++ ){
         userData = await inquirer.prompt([
-            { name: 'name', type: 'input', message: `What is the name?\n` },
-            { name: 'useremail', type: 'input', message: `What is the email?\n` },
+            { name: 'name', type: 'input', message: `What is the name?\n`, validate: vUtil.validateRequired },
+            { name: 'useremail', type: 'input', message: `What is the email?\n`, validate: vUtil.validateRequired },
             { name: 'userrole', type: 'list', message: `What is the role?\n`, choices: ["Engineer", "Intern"], 'default': 'Engineer' },
-            { name: 'github', type: 'input', message: `What is the github?\n`, 'when': (userData) => userData.userrole === 'Engineer'},
-            { name: 'school', type: 'input', message: `What is the School?\n`, 'when': (userData) => userData.userrole === 'Intern' }
+            { name: 'github', type: 'input', message: `What is the github?\n`, 'when': (userData) => userData.userrole === 'Engineer', validate: vUtil.validateRequired },
+            { name: 'school', type: 'input', message: `What is the School?\n`, 'when': (userData) => userData.userrole === 'Intern', validate: vUtil.validateRequired }
         ]);
 
         if (userData.userrole==="Engineer"){
@@ -149,5 +140,7 @@ async function main(){
         console.log(err);
     }
 }
+
+
 
 main();

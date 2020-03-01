@@ -2,7 +2,8 @@
     font awsome <i class="fas fa-user-graduate"></i>
     read from templates and then writefile
     Try and catch !
-
+    screen shots in readme...
+    second, third ... employee is written in messages!
 */
 
 const inquirer = require( 'inquirer' );
@@ -24,7 +25,7 @@ async function main(){
     ]);
 
     // create manager object
-    let manager = new Manager( managerData.managername, managerData.fakeID, managerData.manageremail, managerData.managerofficenumber );
+    let manager = new Manager( managerData.managername, managerData.id, managerData.manageremail, managerData.managerofficenumber );
 
     //console.log(`new employee is a ${manager.role} with ID: ${manager.id} | name: ${manager.name} | email: ${manager.email} | office: ${manager.officeNumber} | employees: ${manager.employees} `);
     
@@ -41,13 +42,13 @@ async function main(){
 
         if (userData.userrole==="Engineer"){
             // create Engineer object
-            employee = new Engineer( userData.name, userData.fakeID, userData.useremail, userData.github );
+            employee = new Engineer( userData.name, userData.id, userData.useremail, userData.github );
             //console.log(`new employee is a ${employee.role} with ID: ${employee.id} | name: ${employee.name} | email: ${employee.email} | git: ${employee.github} `);
 
         }
         else {
             // create Intern object
-            employee = new Intern( userData.name, userData.fakeID, userData.useremail, userData.school );
+            employee = new Intern( userData.name, userData.id, userData.useremail, userData.school );
             //console.log(`new employee is a ${employee.role} with ID: ${employee.id} | name: ${employee.name} | email: ${employee.email} | school: ${employee.school} `);
 
         }
@@ -57,7 +58,7 @@ async function main(){
 
     }
 
-    var html = `
+    let html = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -68,23 +69,23 @@ async function main(){
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
         <title>Document</title>
         </head>
 
 
         <body>
         
-        <div class="row"><div class="col-12" style="background-color: #E54A58; color: white; padding-top:35px; padding-bottom:35px; text-align:center"><h2>My Team<h2></div></div>
+        <div class="row w-100 p-3"><div class="col-12" style="background-color: #E54A58; color: white; padding-top:35px; padding-bottom:35px; text-align:center"><h2>My Team<h2></div></div>
         <br>
         <div class="container" style="border: solid 0px;">
         
-        <div class="row">
+        <div class="row w-100 p-3">
 
-        <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18rem; ">
+        <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18em; ">
             <div class="card-header" style="background-color: #147BF2; color: white;">
                 <h4>${manager.name}</h4>
-                <h4>${manager.role}</h4>
+                <h4><i class="fas fa-mug-hot" style="font-size:30px;color:white;"></i> ${manager.role}</h4>
                 </div>
                 <div class="card-body" style="background-color: #F2FAF1;">
                 <ul class="list-group list-group-flush" style="border: solid 0px; border-color: gray;">
@@ -102,7 +103,7 @@ async function main(){
             <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18rem; ">
                 <div class="card-header" style="background-color: #147BF2; color: white;">
                     <h4>${manager.employees[X].name}</h4>
-                    <h4>${manager.employees[X].role}</h4>
+                    <h4><i class="fas fa-glasses" style="font-size:30px;color:white;"></i> ${manager.employees[X].role}</h4>
                 </div>
                 <div class="card-body" style="background-color: #F2FAF1;">
                 <ul class="list-group list-group-flush" style="border: solid 0px; border-color: gray;">
@@ -118,7 +119,7 @@ async function main(){
             <div class="col-4 card" style="border: solid 0px; border-color: gray; width: 18rem; ">
                 <div class="card-header" style="background-color: #147BF2; color: white;">
                     <h4>${manager.employees[X].name}</h4>
-                    <h4>${manager.employees[X].role}</h4>
+                    <h4><i class="fas fa-user-graduate" style="font-size:30px;color:white;"></i> ${manager.employees[X].role}</h4>
                 </div>
                 <div class="card-body" style="background-color: #F2FAF1;">
                 <ul class="list-group list-group-flush" style="border: solid 0px; border-color: gray;">
@@ -127,8 +128,7 @@ async function main(){
                     <li class="list-group-item"><b>GitHub:</b> ${manager.employees[X].school}</li>
                 </ul>
                 </div>
-            </div>
-            `
+            </div>`
         }
     }
     html = html + "</div></body></html>"
@@ -140,7 +140,5 @@ async function main(){
         console.log(err);
     }
 }
-
-
 
 main();

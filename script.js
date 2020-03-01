@@ -1,11 +1,3 @@
-/* 
-    font awsome <i class="fas fa-user-graduate"></i>
-    read from templates and then writefile
-    Try and catch !
-    screen shots in readme...
-    second, third ... employee is written in messages!
-*/
-
 const inquirer = require( 'inquirer' );
 const util = require( "util" );
 const fs = require( 'fs' );

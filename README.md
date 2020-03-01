@@ -37,7 +37,7 @@ app.js         // Runs the application
 ```
 
 
- ## Reslts Screenshots:
+ ## Results Screenshots:
 ![Screenshot1](Screenshots/Validation%20Rules.jpg)
 
 ![Screenshot2](Screenshots/Test%20results.jpg)
